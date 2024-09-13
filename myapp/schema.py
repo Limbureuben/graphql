@@ -19,8 +19,26 @@ class ApplicationType(DjangoObjectType):
         model = Application
         fields = ('id', 'username', 'email', 'region', 'phone_number', 'application_date')
         
+class UserType(DjangoObjectType):
+    class Meta:
+        model = User
         
         
+class ObtainJSONWebToken(graphql_jwt.ObtainJSONWebToken):
+    user = graphene.Field(UserType)
+    
+    @classmethod
+    def resolve(cls, root, info, **kwargs):
+        return cls(user=info.context.user)
+    
+class VerifyToken(graphql_jwt.Verify):
+    pass 
+
+class RefreshToken(graphql_jwt.Refresh):
+    pass
+    
+        
+
 ##############################INPUT TYPES FOR CREATING ENTINTIES#########################
 
 class CreateRegistrationInput(graphene.InputObjectType):
@@ -88,6 +106,8 @@ class CreateApplicationMutation(graphene.Mutation):
                 phone_number = input.phone_number
             )
         return CreateApplicationMutation(application=application)
+    
+    
 
 
 #########################UPDATE MUTATIONS ###############################
@@ -227,9 +247,15 @@ class Mutation(graphene.ObjectType):
     update_registration=UpdateRegistration.Field()
     login = LoginMutation.Field()
     admin_login = AdminMutation.Field()
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
-    verify_token = graphql_jwt.Verify.Field()
-    refresh_token = graphql_jwt.Refresh.Field()
+    
+    
+    
+    # token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    # verify_token = graphql_jwt.Verify.Field()
+    # refresh_token = graphql_jwt.Refresh.Field()
+    token_auth = ObtainJSONWebToken.Field()
+    verify_token = VerifyToken.Field()
+    refresh_token = RefreshToken.Field()
     
 
     

@@ -136,35 +136,6 @@ class UpdateRegistration(graphene.Mutation):
         return UpdateRegistration(registration=registration)
 
 
-# class UpdateRegistration(graphene.Mutation):
-#     class Arguments:
-#         id = graphene.ID(required=True)
-#         username = graphene.String()
-#         email = graphene.String()
-        
-#     registration = graphene.Field(RegistrationType)
-    
-#     def mutate(self, info, id, username=None, email=None):
-#         try:
-#             registration = Registration.objects.get(pk=id)
-            
-#         except Registration.DoesNotExist:
-#             raise Exception("User not found")
-        
-#         if username:
-#             Registration.username = username
-            
-#         if email:
-#             Registration.email = email
-            
-#         Registration.save()
-#         return UpdateRegistration(registration=registration)
-        
-        
-    
-        
-
-
 ###########################DELETE MUTATIONS #############################
 
 class DeleteRegistrationMutation(graphene.Mutation):
@@ -261,8 +232,6 @@ class Mutation(graphene.ObjectType):
     token_auth = ObtainJSONWebToken.Field()
     verify_token = VerifyToken.Field()
     refresh_token = RefreshToken.Field()
-    
-
     
 
 # Query class for all queries

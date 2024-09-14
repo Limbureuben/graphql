@@ -51,7 +51,8 @@ class UpdateRegistrationInput(graphene.InputObjectType):
      id = graphene.ID(required=True)
      username = graphene.String(required=True)
      email = graphene.String(required=True)
-    
+     
+
 class CreateApplicationInput(graphene.InputObjectType):
     username = graphene.String(required=True)
     email = graphene.String(required=True)
@@ -115,20 +116,24 @@ class CreateApplicationMutation(graphene.Mutation):
 class UpdateRegistration(graphene.Mutation):
     class Arguments:
         input = UpdateRegistrationInput(required=True)
-        
-    success = graphene.Boolean()
-    message = graphene.String()
     
-    @staticmethod
-    def mutate(root, info, input):
-        registration = Registration.objects.get(username=input.username)
+    registration = graphene.Field(RegistrationType)  # The updated registration will be returned
+
+    @classmethod
+    def mutate(cls, root, info, input=None):
+        # Fetch the registration by ID
+        try:
+            registration = Registration.objects.get(pk=input.id)
+        except Registration.DoesNotExist:
+            raise Exception('User not found')
         
-        if 'email' in input:
-            registration.email = input.email
-            
+        # Update the registration fields
+        registration.username = input.username
+        registration.email = input.email
         registration.save()
         
-        return UpdateRegistration(success=True, message="User update successfully!!")
+        # Return the updated registration
+        return UpdateRegistration(registration=registration)
 
 
 # class UpdateRegistration(graphene.Mutation):
@@ -244,7 +249,7 @@ class Mutation(graphene.ObjectType):
     create_registration = CreateRegistrationMutation.Field()
     delete_registration = DeleteRegistrationMutation.Field()
     create_application = CreateApplicationMutation.Field()
-    update_registration=UpdateRegistration.Field()
+    update_registration = UpdateRegistration.Field()
     login = LoginMutation.Field()
     admin_login = AdminMutation.Field()
     

@@ -26,6 +26,13 @@ class Application(models.Model):
     def __str__(self):
         return self.username
     
+class Message(models.Model):
+    id = models.AutoField(primary_key=True)
+    topic = models.CharField(max_length=255, default="null")
+    published_date = models.DateField(default=date.today, null=True)
+    text = models.TextField()
+    
+    
 
 class Employment(models.Model):
     job_title = models.CharField(max_length=55, default="")

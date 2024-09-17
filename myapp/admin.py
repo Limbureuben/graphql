@@ -16,3 +16,9 @@ class ApplicationAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email')
     
 admin.site.register(Application, ApplicationAdmin)
+
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'topic', 'published_date', 'text')
+    
+admin.site.register(Message, MessageAdmin)
+    

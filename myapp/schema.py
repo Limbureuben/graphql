@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 import graphql_jwt
 from .models import *
+from .graphqlviews import *
 
 
 ############################GRAPHQL TYPES#########################
@@ -18,6 +19,11 @@ class ApplicationType(DjangoObjectType):
     class Meta:
         model = Application
         fields = ('id', 'username', 'email', 'region', 'phone_number', 'application_date')
+        
+class MessageType(DjangoObjectType):
+    class Meta:
+        model = Message
+        fields = ('id','topic', 'published_date', 'text')
         
 class UserType(DjangoObjectType):
     class Meta:
@@ -76,6 +82,10 @@ class CreateEmployment(graphene.InputObjectType):
     employ_name = graphene.String(required=True)
     
     
+class CreateMessage(graphene.InputObjectType):
+    topic = graphene.String(required=True)
+    text = graphene.String(required=True)
+    
 #####################################CREATE MUTATIONS###############################
 
 class CreateRegistrationMutation(graphene.Mutation):
@@ -107,7 +117,20 @@ class CreateApplicationMutation(graphene.Mutation):
                 phone_number = input.phone_number
             )
         return CreateApplicationMutation(application=application)
+
+
+class CreateMessageMutation(graphene.Mutation):
+    class Arguments:
+        input = CreateMessage(required=True)
+    message = graphene.Field(MessageType)
     
+    def mutate(self, root, input):
+        message = Message.objects.create(
+            topic = input.topic,
+            text = input.text
+        )
+        
+        return CreateMessageMutation(message=message)
     
 
 
@@ -223,6 +246,7 @@ class Mutation(graphene.ObjectType):
     update_registration = UpdateRegistration.Field()
     login = LoginMutation.Field()
     admin_login = AdminMutation.Field()
+    create_message = CreateMessageMutation.Field()
     
     
     

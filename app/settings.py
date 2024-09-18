@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'myapp',
     'corsheaders',
     'rest_framework',
-    'myapp_dto',
     
 ]
 

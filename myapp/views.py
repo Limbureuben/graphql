@@ -4,6 +4,12 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import graphene
+from .models import *
+from app_dtos.app import EmploymentInputObject, EmploymentObject
+from appBuilders.appBuilders import EmploymentBuilders
+
+
 
 @csrf_exempt
 def execute_code(request):
@@ -132,5 +138,44 @@ class FileUploadView(APIView):
             return Response({"error": True, "message": str(e)})
     
     
+# class CreateEmploymentMutation(graphene.Mutation):
+    
+#     class Arguments:
+#         input = EmploymentInputObject(required=True)
         
+#     data = graphene.Field(EmploymentObject)
+    
+#     def mutate(self, info, input):
+#         new_employment, create = Employment.objects.update_or_create(
+#             job_title = input.job_title,
+#             employ_status = input.employ_status,
+#             details_month = input.details_month,
+#             employ_name = input.employ_name,
+            
+#         defaults={
+#             'is_active': True
+#         }
+#         )
+#         return EmploymentBuilders.get_employment_data(id=new_employment.unique_id)
+
+
+
+class CreateEmploymentMutation(graphene.Mutation):
+    class Arguments:
+        input = EmploymentInputObject(required=True)
+        
+    data = graphene.Field(EmploymentObject)
+    success=graphene.Boolean()
+    
+    @classmethod
+    def mutate(cls,root, info, input):
+        # Create a new employment record
+        new_employment = Employment.objects.create(
+            job_title=input.job_title,
+            employ_status=input.employ_status,
+            details_month=input.details_month,
+            employ_name=input.employ_name
+        )
+    
+        return CreateEmploymentMutation(data=new_employment,success=True)
     

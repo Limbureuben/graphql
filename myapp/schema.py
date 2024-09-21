@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 import graphql_jwt
 from .models import *
-from .graphqlviews import *
+from .views import *
+from app_dtos.app import *
+from appBuilders.appBuilders import *
 
 
 ############################GRAPHQL TYPES#########################
@@ -247,6 +249,7 @@ class Mutation(graphene.ObjectType):
     login = LoginMutation.Field()
     admin_login = AdminMutation.Field()
     create_message = CreateMessageMutation.Field()
+    create_employment = CreateEmploymentMutation.Field()
     
     
     

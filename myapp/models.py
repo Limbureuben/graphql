@@ -1,6 +1,7 @@
 from pyexpat import model
 from django.db import models
 from datetime import date
+import uuid
 
 # Create your models here.
 
@@ -35,10 +36,13 @@ class Message(models.Model):
     
 
 class Employment(models.Model):
+    # id = models.AutoField(primary_key=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     job_title = models.CharField(max_length=55, default="")
     employ_status = models.CharField(max_length=255, default="")
     details_month = models.CharField(max_length=255, default="")
     employ_name = models.CharField(max_length=255, default="")
+    is_active = models.BooleanField(default=True)
     
     
     def __str__(self):

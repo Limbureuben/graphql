@@ -16,6 +16,10 @@ class RegistrationType(DjangoObjectType):
         model = Registration
         fields = ('id', 'username', 'email')
 
+class FinancialType(DjangoObjectType):
+    class Meta:
+        model = Financial
+        fields = ('id', 'accountname', 'amount', 'salary', 'passport_path')
         
 class ApplicationType(DjangoObjectType):
     class Meta:
@@ -53,6 +57,10 @@ class CreateRegistrationInput(graphene.InputObjectType):
     username = graphene.String(required=True)
     email = graphene.String(required=True)
     password = graphene.String(required=True)
+    
+    
+# class CreateFinancialInput(graphene.InputObjectType):
+    
 
 
 class UpdateRegistrationInput(graphene.InputObjectType):

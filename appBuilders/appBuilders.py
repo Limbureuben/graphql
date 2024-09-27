@@ -45,4 +45,7 @@ class EmploymentBuilders:
                 )
                 
         # Return None or raise an exception if employment is not found
-        return None
+            else:
+                EmploymentObject()
+        else:
+            EmploymentObject()

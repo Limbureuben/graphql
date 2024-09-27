@@ -47,52 +47,52 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Weather
-# from .serializers import WeatherSerializer
+from .serializer import WeatherSerializer
 # import pandas as pd
 from rest_framework.views import APIView
 from .serializer import FileSerializer
 from .models import Files
 
 from rest_framework.parsers import FileUploadParser
-# @api_view(['GET'])
-# def hourly_average_summary(request):
-#     data = Weather.objects.all().order_by('created_at')
-#     serializer = WeatherSerializer(data, many=True)
-#     df = pd.DataFrame(serializer.data)
-#     df['created_at'] = pd.to_datetime(df['created_at'])
-#     df.set_index('created_at', inplace=True)
-#     df_resampled = df.resample('10T').agg({
-#         'temperature': 'mean',
-#         'humidity': 'mean'
-#     }).reset_index()
-#     df_resampled.fillna(0, inplace=True)  # Replace NaN values with 0
+@api_view(['GET'])
+def hourly_average_summary(request):
+    data = Weather.objects.all().order_by('created_at')
+    serializer = WeatherSerializer(data, many=True)
+    df = pd.DataFrame(serializer.data) # type: ignore
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df.set_index('created_at', inplace=True)
+    df_resampled = df.resample('10T').agg({
+        'temperature': 'mean',
+        'humidity': 'mean'
+    }).reset_index()
+    df_resampled.fillna(0, inplace=True)  # Replace NaN values with 0
     
-#     df_resampled.replace([float('inf'), float('-inf')], 0, inplace=True)  # Replace infinite values with 0
+    df_resampled.replace([float('inf'), float('-inf')], 0, inplace=True)  # Replace infinite values with 0
     
-#     # Delete rows where either 'Temperature Average' or 'Humidity Average' is 0
-#     df_resampled = df_resampled[(df_resampled['temperature'] != 0) & (df_resampled['humidity'] != 0)]
-#     df_resampled.replace([float('inf'), float('-inf')], 0, inplace=True)  # Replace infinite values with 0
-#     df_resampled.columns = ['Date', 'Temperature Average', 'Humidity Average']
-#     response_data = df_resampled.to_dict(orient='records')
-#     return Response(response_data)
+    # Delete rows where either 'Temperature Average' or 'Humidity Average' is 0
+    df_resampled = df_resampled[(df_resampled['temperature'] != 0) & (df_resampled['humidity'] != 0)]
+    df_resampled.replace([float('inf'), float('-inf')], 0, inplace=True)  # Replace infinite values with 0
+    df_resampled.columns = ['Date', 'Temperature Average', 'Humidity Average']
+    response_data = df_resampled.to_dict(orient='records')
+    return Response(response_data)
 
 
 
-# @api_view(['GET'])
-# def current_weather(request):
-#     try:
-#         # Retrieve the latest weather record
-#         latest_weather = Weather.objects.latest('created_at')
+@api_view(['GET'])
+def current_weather(request):
+    try:
+        # Retrieve the latest weather record
+        latest_weather = Weather.objects.latest('created_at')
         
-#         # Serialize the latest weather record
-#         serializer = WeatherSerializer(latest_weather)
+        # Serialize the latest weather record
+        serializer = WeatherSerializer(latest_weather)
         
-#         # Return the serialized data
-#         return Response(serializer.data)
+        # Return the serialized data
+        return Response(serializer.data)
     
-#     except Weather.DoesNotExist:
-#         # If no weather data is available, return an empty response or an error message
-#         return Response({"error": "No weather data available."}, status=404)
+    except Weather.DoesNotExist:
+        # If no weather data is available, return an empty response or an error message
+        return Response({"error": "No weather data available."}, status=404)
     
 
 ################file upload##############

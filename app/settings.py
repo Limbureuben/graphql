@@ -67,7 +67,6 @@ INSTALLED_APPS = [
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
 
 MIDDLEWARE = [
-     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'

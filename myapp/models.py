@@ -1,11 +1,12 @@
 from pyexpat import model
 from django.db import models
 from datetime import date
+import uuid
 
 # Create your models here.
 
 class Registration(models.Model):
-    id = models.AutoField(primary_key=True) # Explicitly define the id field
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255, default="")
     email = models.EmailField(max_length=50, default="")
     password = models.CharField(max_length=255)
@@ -33,12 +34,14 @@ class Message(models.Model):
     text = models.TextField()
     
     
-
 class Employment(models.Model):
+    # id = models.AutoField(primary_key=True)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     job_title = models.CharField(max_length=55, default="")
     employ_status = models.CharField(max_length=255, default="")
     details_month = models.CharField(max_length=255, default="")
     employ_name = models.CharField(max_length=255, default="")
+    is_active = models.BooleanField(default=True)
     
     
     def __str__(self):
@@ -51,7 +54,10 @@ class Weather(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     
 class Financial(models.Model):
-    username = models.CharField(max_length=200, null=True, blank=True)
+    # accountname =  models.CharField(max_length=200, nulll=True, default="")
+    accountname = models.CharField(max_length=200, null=True, default="")
+    amount = models.CharField(max_length=200, null=True, blank=True)
+    salary = models.CharField(max_length=200, null=True, default="")
     passport_path = models.CharField(max_length=200, null=True, blank=True)
     
 class Files(models.Model):
